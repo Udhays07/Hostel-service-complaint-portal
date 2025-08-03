@@ -15,12 +15,11 @@
 
 ## Tech Stack
 
-- **Node.js**: JavaScript runtime for building server-side applications.
-- **Express.js**: Web framework for Node.js to handle HTTP requests and routing.
-- **MongoDB**: NoSQL database to store complaints and user data.
-- **Mongoose**: ODM (Object Data Modeling) library for MongoDB and Node.js.
-- **JWT (JSON Web Tokens)**: For user authentication.
-- **bcrypt**: For password hashing.
+- **Python**: Programming language for backend development.
+- **FastAPI**: Modern, fast (high-performance) web framework for building APIs with Python.
+- **SQLAlchemy**: ORM (Object Relational Mapper) for database interactions.
+- **SQLite**: Lightweight, file-based relational database.
+- **Pydantic**: Data validation and settings management using Python type annotations.
 
 ---
 
@@ -28,13 +27,16 @@
 
 ```
 Backend/
-├── controllers/      # Logic for handling requests
-├── models/           # Database schemas
-├── routes/           # API endpoint definitions
-├── middleware/       # Authentication and other middlewares
-├── config/           # Configuration files (DB, environment)
-├── app.js            # Main application file
-└── README.md         # Documentation
+├── app/               # Main application package
+│   ├── api/           # API endpoint definitions
+│   ├── models/        # SQLAlchemy ORM models
+│   ├── schemas/       # Pydantic models for request/response
+│   ├── db/            # Database session and config
+│   ├── core/          # Core logic (auth, utils)
+│   └── main.py        # FastAPI entry point
+├── tests/             # Test cases
+├── requirements.txt   # Python dependencies
+└── README.md          # Documentation
 ```
 
 ---
@@ -45,12 +47,26 @@ Backend/
 
 - **POST /api/register**  
     Register a new user.  
-    **Body:** `{ name, email, password, hostel }`  
+    **Body:**  
+    ```json
+    {
+      "name": "string",
+      "email": "string",
+      "password": "string",
+      "hostel": "string"
+    }
+    ```
     **Response:** Success message or error.
 
 - **POST /api/login**  
     Login an existing user.  
-    **Body:** `{ email, password }`  
+    **Body:**  
+    ```json
+    {
+      "email": "string",
+      "password": "string"
+    }
+    ```
     **Response:** JWT token or error.
 
 ---
@@ -60,7 +76,14 @@ Backend/
 - **POST /api/complaints**  
     Create a new complaint.  
     **Headers:** `Authorization: Bearer <token>`  
-    **Body:** `{ title, description, category }`  
+    **Body:**  
+    ```json
+    {
+      "title": "string",
+      "description": "string",
+      "category": "string"
+    }
+    ```
     **Response:** Complaint details or error.
 
 - **GET /api/complaints**  
@@ -68,18 +91,18 @@ Backend/
     **Headers:** `Authorization: Bearer <token>`  
     **Response:** List of complaints.
 
-- **GET /api/complaints/:id**  
+- **GET /api/complaints/{id}**  
     Get a specific complaint by ID.  
     **Headers:** `Authorization: Bearer <token>`  
     **Response:** Complaint details.
 
-- **PUT /api/complaints/:id**  
+- **PUT /api/complaints/{id}**  
     Update a complaint (only by creator or admin).  
     **Headers:** `Authorization: Bearer <token>`  
     **Body:** Fields to update.  
     **Response:** Updated complaint or error.
 
-- **DELETE /api/complaints/:id**  
+- **DELETE /api/complaints/{id}**  
     Delete a complaint (only by creator or admin).  
     **Headers:** `Authorization: Bearer <token>`  
     **Response:** Success message or error.
@@ -93,45 +116,55 @@ Backend/
     **Headers:** `Authorization: Bearer <admin-token>`  
     **Response:** List of complaints.
 
-- **PUT /api/admin/complaints/:id/status**  
+- **PUT /api/admin/complaints/{id}/status**  
     Update complaint status (e.g., resolved, pending).  
     **Headers:** `Authorization: Bearer <admin-token>`  
-    **Body:** `{ status }`  
+    **Body:**  
+    ```json
+    {
+      "status": "string"
+    }
+    ```
     **Response:** Updated complaint.
 
 ---
 
 ## How to Run Locally
 
-1. **Install Node.js and MongoDB** on your machine.
+1. **Install Python 3.8+** on your machine.
 2. **Clone the repository**:
-     ```bash
-     git clone <repo-url>
-     cd Backend
-     ```
-3. **Install dependencies**:
-     ```bash
-     npm install
-     ```
-4. **Configure environment variables** in a `.env` file:
-     ```
-     MONGO_URI=<your-mongodb-uri>
-     JWT_SECRET=<your-secret-key>
-     ```
-5. **Start the server**:
-     ```bash
-     npm start
-     ```
-6. The backend runs on `http://localhost:3000` by default.
+    ```bash
+    git clone <repo-url>
+    cd Backend
+    ```
+3. **Create and activate a virtual environment**:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+4. **Install dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+5. **Configure environment variables** in a `.env` file:
+    ```
+    SECRET_KEY=<your-secret-key>
+    ```
+6. **Start the server**:
+    ```bash
+    uvicorn app.main:app --reload
+    ```
+7. The backend runs on `http://localhost:8000` by default.
 
 ---
 
 ## Useful Concepts
 
-- **REST API**: A way for clients (like frontend apps) to communicate with the backend using HTTP methods (GET, POST, PUT, DELETE).
-- **Authentication**: Ensures only registered users can access certain endpoints.
-- **Middleware**: Functions that run before request handlers (e.g., checking authentication).
-- **Database Models**: Define how data is stored and retrieved.
+- **FastAPI**: Enables automatic generation of OpenAPI docs and fast development.
+- **Pydantic Models**: Used for request validation and response serialization.
+- **SQLAlchemy ORM**: Maps Python classes to database tables.
+- **JWT Authentication**: Secures endpoints and manages user sessions.
+- **Dependency Injection**: FastAPI's way to manage database sessions and authentication.
 
 ---
 
@@ -145,7 +178,7 @@ Backend/
 
 ## Need Help?
 
-If you are stuck, search for tutorials on Node.js, Express, and MongoDB. The official documentation is very helpful!
+If you are stuck, search for tutorials on FastAPI, SQLAlchemy, and Pydantic. The official documentation is very helpful!
 
 ---
 
